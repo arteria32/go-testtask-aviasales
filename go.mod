@@ -1,4 +1,4 @@
-module example.com/m/v2
+module main
 
 go 1.21.0
 

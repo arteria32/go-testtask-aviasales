@@ -1,22 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"main/handlers"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 )
-
-func handlerGetHelloWorld(wr http.ResponseWriter,
-	req *http.Request) {
-	fmt.Fprintf(wr, "Hello, World\n")
-	log.Println(req.Method) // request method
-	log.Println(req.URL)    // request URL
-	log.Println(req.Header) // request headers
-	log.Println(req.Body)   // request body)
-}
 
 func main() {
 	log.Println("Server starts")
@@ -27,7 +18,9 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	router.HandleFunc("/", handlerGetHelloWorld)
+	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
+	router.HandleFunc("/GetAllTickets", handlers.HandlerGetAllTickets)
+	router.HandleFunc("/GetBestTicketByType/{type}", handlers.HandlerBestTicketByType)
 
 	err := srv.ListenAndServe()
 	if err != nil {
