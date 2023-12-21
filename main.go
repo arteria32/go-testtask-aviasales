@@ -19,7 +19,7 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 	router.HandleFunc("/", handlers.HandlerGetHelloWorld)
-	router.HandleFunc("/GetAllTickets", handlers.HandlerGetAllTickets)
+	router.HandleFunc("/GetAllTickets", handlers.HandlerGetTicketsByInterval)
 	router.HandleFunc("/GetBestTicketByType/{type}", handlers.HandlerBestTicketByType)
 
 	err := srv.ListenAndServe()

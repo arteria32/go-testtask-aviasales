@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	ticketsfinder "main/services"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -17,7 +19,7 @@ func HandlerGetHelloWorld(wr http.ResponseWriter,
 	log.Println(req.Body)   // request body)
 }
 
-func HandlerGetAllTickets(wr http.ResponseWriter,
+func HandlerGetTicketsByInterval(wr http.ResponseWriter,
 	req *http.Request) {
 	values := req.URL.Query()
 	airportFrom := values.Get("from")
@@ -28,6 +30,7 @@ func HandlerGetAllTickets(wr http.ResponseWriter,
 		http.Error(wr, fmt.Sprintf("Not found params"), http.StatusNotFound)
 		return
 	}
+
 }
 
 func HandlerBestTicketByType(wr http.ResponseWriter,
@@ -45,4 +48,18 @@ func HandlerBestTicketByType(wr http.ResponseWriter,
 		http.Error(wr, "Not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	res, err := ticketsfinder.GetTicketsInfoByIntervalAndType(airportFrom, airportTo, typeSearch)
+	if err != nil {
+		http.Error(wr, err.Error(), http.StatusBadRequest)
+		return
+	}
+	log.Println("res", res)
+	jsonResponse, jsonError := json.Marshal(res)
+	if jsonError != nil {
+		http.Error(wr, err.Error(), http.StatusBadRequest)
+		return
+	}
+	wr.Header().Set("Content-Type", "application/json")
+	wr.WriteHeader(http.StatusOK)
+	wr.Write(jsonResponse)
 }
